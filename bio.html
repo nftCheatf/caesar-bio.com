@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статус OwnerCaesar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+        
+        .anime-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .online {
+            background-color: #10b981;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+        }
+        
+        .offline {
+            background-color: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+        
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .telegram-btn {
+            background: #0088cc;
+            transition: all 0.3s ease;
+        }
+        
+        .telegram-btn:hover {
+            background: #0077b6;
+            transform: translateY(-2px);
+        }
+        
+        /* Анимация падающих элементов */
+        @keyframes falling {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .falling-element {
+            position: absolute;
+            animation: falling linear infinite;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-white">
+    <!-- Аниме-анимация на фоне -->
+    <div class="anime-bg" id="animeBg"></div>
+    
+    <!-- Прозрачное окно -->
+    <div class="glass-card rounded-2xl p-8 max-w-md w-full mx-4 shadow-xl">
+        <div class="text-center mb-6">
+            <i class="fab fa-telegram text-5xl text-blue-400 mb-4"></i>
+            <h1 class="text-3xl font-bold mb-2">OwnerCaesar</h1>
+            <div class="flex items-center justify-center mb-6">
+                <span id="statusDot" class="status-dot offline"></span>
+                <span id="statusText" class="text-lg">Проверка статуса...</span>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="https://t.me/OwnerCaesar" target="_blank" class="telegram-btn inline-flex items-center justify-center px-6 py-3 rounded-full font-medium text-white shadow-lg">
+                <i class="fab fa-telegram mr-2"></i> Написать в Telegram
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Создаем аниме-анимацию на фоне
+        function createAnimeBackground() {
+            const bg = document.getElementById('animeBg');
+            const elements = ['🌸', '⭐', '🍥', '∆', '⚡', '❄️', '°'];
+            
+            for (let i = 0; i < 20; i++) {
+                const element = document.createElement('div');
+                element.className = 'falling-element';
+                element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                element.style.left = Math.random() * 100 + 'vw';
+                element.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                element.style.animationDelay = Math.random() * 5 + 's';
+                element.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                element.style.opacity = Math.random() * 0.5 + 0.3;
+                bg.appendChild(element);
+            }
+        }
+        
+        // Проверка статуса Telegram
+        async function checkTelegramStatus() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                // В реальном приложении здесь должен быть запрос к API Telegram
+                // Но так как это демо, мы имитируем случайный статус
+                const isOnline = Math.random() > 0.5;
+                
+                if (isOnline) {
+                    statusDot.className = 'status-dot online';
+                    statusText.textContent = 'В сети';
+                } else {
+                    statusDot.className = 'status-dot offline';
+                    statusText.textContent = 'Не в сети';
+                }
+            } catch (error) {
+                console.error('Ошибка при проверке статуса:', error);
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Ошибка проверки';
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            createAnimeBackground();
+            checkTelegramStatus();
+            
+            // Проверяем статус каждые 30 секунд
+            setInterval(checkTelegramStatus, 30000);
+        });
+    </script>
+</body>
+</html>
